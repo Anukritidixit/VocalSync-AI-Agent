@@ -2,31 +2,26 @@ import os
 from pathlib import Path
 
 def create_local_file(filename: str, content: str) -> str:
-    """
-    Securely creates a file within the designated output directory.
-    Prevents directory traversal attacks.
-    """
+    # Handles both files and sub-folders inside 'output'
     try:
-        # 1. Ensure output directory exists safely
-        output_dir = Path("output")
-        output_dir.mkdir(exist_ok=True)
+        base_output = Path("output")
         
-        # 2. Security constraint: Extract just the filename to prevent malicious paths 
-        # (e.g., if the AI tries to write to "../../system_file.txt")
-        safe_filename = Path(filename).name
-        file_path = output_dir / safe_filename
+        # Combine output dir with the user's requested path
+        full_path = base_output / filename
         
-        # 3. Write the file
-        with open(file_path, "w", encoding="utf-8") as f:
+        # Create any necessary sub-folders automatically (This is the magic line!)
+        full_path.parent.mkdir(parents=True, exist_ok=True)
+        
+        with open(full_path, "w", encoding="utf-8") as f:
             f.write(content)
         
-        return f"✅ Success: File saved securely at `{file_path}`"
+        return f"✅ Success: Saved to `{full_path}`"
         
     except Exception as e:
-        return f"❌ Error creating file: {str(e)}"
+        return f"❌ Error: {str(e)}"
 
 def summarize_content(text: str) -> str:
-    """Provides a simple fallback summary snippet."""
+    # fallback for when we just need a quick text snippet
     if not text:
         return "No text provided to summarize."
     return f"Summary snippet: {text[:150]}..."
