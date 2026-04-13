@@ -18,7 +18,7 @@ def create_local_file(filename: str, content: str) -> str:
         return f"✅ Success: Saved to `{full_path}`"
         
     except Exception as e:
-        return f"❌ Error: {str(e)}"
+        return f" Error: {str(e)}"
 
 def summarize_content(text: str) -> str:
     # fallback for when we just need a quick text snippet
